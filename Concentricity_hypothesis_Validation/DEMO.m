@@ -6,36 +6,34 @@
 % Author: Yasel Garces
 
 %------------------------------------------------------------
-% Load directory
-pathname{1} = '/media/yasel/e918b490-ed8b-4ab6-9b85-b300970fb84c/Yasel/TRABAJO/Doctorado/Viroplasmas/Imagenes/PreSeg_Images/SR/Validation/NSP2rojo-dsRNAverde/';
-pathname{2} = '/media/yasel/e918b490-ed8b-4ab6-9b85-b300970fb84c/Yasel/TRABAJO/Doctorado/Viroplasmas/Imagenes/PreSeg_Images/SR/Validation/NSP2rojo-PDIverde/';
-pathname{3} = '/media/yasel/e918b490-ed8b-4ab6-9b85-b300970fb84c/Yasel/TRABAJO/Doctorado/Viroplasmas/Imagenes/PreSeg_Images/SR/Validation/NSP2rojo-VP4verde/';
-pathname{4} = '/media/yasel/e918b490-ed8b-4ab6-9b85-b300970fb84c/Yasel/TRABAJO/Doctorado/Viroplasmas/Imagenes/PreSeg_Images/SR/Validation/NSP2rojo-VP6verde/';
-pathname{5} = '/media/yasel/e918b490-ed8b-4ab6-9b85-b300970fb84c/Yasel/TRABAJO/Doctorado/Viroplasmas/Imagenes/PreSeg_Images/SR/Validation/NSP2rojo-VP760verde/';
-pathname{6} = '/media/yasel/e918b490-ed8b-4ab6-9b85-b300970fb84c/Yasel/TRABAJO/Doctorado/Viroplasmas/Imagenes/PreSeg_Images/SR/Validation/NSP2rojo-VP7159verde';
-pathname{7} = '/media/yasel/e918b490-ed8b-4ab6-9b85-b300970fb84c/Yasel/TRABAJO/Doctorado/Viroplasmas/Imagenes/PreSeg_Images/SR/Validation/NSP4rojo-NSP2verde/';
-pathname{8} = '/media/yasel/e918b490-ed8b-4ab6-9b85-b300970fb84c/Yasel/TRABAJO/Doctorado/Viroplasmas/Imagenes/PreSeg_Images/SR/Validation/NSP5rojo-NSP2verde/';
-pathname{9} = '/media/yasel/e918b490-ed8b-4ab6-9b85-b300970fb84c/Yasel/TRABAJO/Doctorado/Viroplasmas/Imagenes/PreSeg_Images/SR/Validation/NSP2rojo-VP1verde/';
-pathname{10} = '/media/yasel/e918b490-ed8b-4ab6-9b85-b300970fb84c/Yasel/TRABAJO/Doctorado/Viroplasmas/Imagenes/PreSeg_Images/SR/Validation/NSP2rojo-VP2verde/';
+% It specifies the directory where the images are
+pathname{1} = '/home/yasel/TRABAJO/IBt/Viroplasms/Validation/NSP2rojo-VP4verde/';
+pathname{2} = '/home/yasel/TRABAJO/IBt/Viroplasms/Validation/NSP2rojo-VP6verde/';
+pathname{3} = '/home/yasel/TRABAJO/IBt/Viroplasms/Validation/NSP2rojo-VP760verde/';
+pathname{4} = '/home/yasel/TRABAJO/IBt/Viroplasms/Validation/NSP2rojo-VP7159verde/';
+pathname{5} = '/home/yasel/TRABAJO/IBt/Viroplasms/Validation/NSP4rojo-NSP2verde/';
+pathname{6} = '/home/yasel/TRABAJO/IBt/Viroplasms/Validation/NSP5rojo-NSP2verde/';
+pathname{7} = '/home/yasel/TRABAJO/IBt/Viroplasms/Validation/NSP2rojo-VP1verde/';
+pathname{8} = '/home/yasel/TRABAJO/IBt/Viroplasms/Validation/NSP2rojo-VP2verde/';
 
-
-% Central protein, 1= red, 0=green
-nameCentralProtein="NSP2";
-otherProteinName=["dsRNA","PDI","VP4","VP6","VP760","VP7159","NSP4","NSP5","VP1","VP2"];
-
-central_protein=[1,1,1,1,1,1,0,0,1,1];
+% Name of the others proteins.
+otherProteinName=["VP4","VP6","VP760","VP7159","NSP4","NSP5","VP1","VP2"];
+% This variable is 1 of NSP2 is red and zero in other case.
+central_protein=[1,1,1,1,0,0,1,1];
 % Type of file
 type='*.tif';
 
-% Declarate loop variables
+% Variables Declaration
 Distance=[];
 Combination=[];
 
-% Run the rutine of fit the ellipse for each directory
+% For each directory (experiment between two different proteins) 
+% and each image in the directory, run the algorithms DLSFC and 
+% adjust the distribution of both proteins independently.
 for j=1:length(pathname)
     % Load files in the directory
     files=get_list_files(pathname{j},type);
-    % For each image we adjust a ellipse to each protein.
+    % For each image we adjust a circumference to each protein.
     for i=1:length(files)
         % Image name
         nameImg=files(i);
@@ -49,12 +47,12 @@ for j=1:length(pathname)
         
         if central_protein(j)==1
             % Ellipses adjustment
-            CentralP=fit_circunsference_LSFC(x_red,y_red);
-            OtherP=fit_circunsference_LSFC(x_green,y_green);
+            CentralP=fit_circumference_LSFC(x_red,y_red);
+            OtherP=fit_circumference_LSFC(x_green,y_green);
         else
             % Ellipses adjustment
-            OtherP  =fit_circunsference_LSFC(x_red,y_red);
-            CentralP=fit_circunsference_LSFC(x_green,y_green);
+            OtherP  =fit_circumference_LSFC(x_red,y_red);
+            CentralP=fit_circumference_LSFC(x_green,y_green);
         end
         this_Distance(i,:)=sqrt((CentralP(2)-OtherP(2))^2 + (CentralP(3)-OtherP(3))^2)/100;
     end

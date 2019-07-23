@@ -1,12 +1,13 @@
-% Adjust a circunference to a set of points in R^2. The algorithm is based in a least square 
-% approach. For more details contact with Yasel by email: 88yasel@gmail.com.
+% Adjust a circumference to a set of points in R^2. The algorithm is based in a least square 
+% approach. Details about this algorithm is available in this paper:
+% "Nanoscale organization of rotavirus replication machineries", eLife
 % INPUT:
 %     x,y: data points
 % OUTPUT:
-%     v: implicit form of the circunference (R,cx,cy).
-% Author: Yasel Garces.
+%     v: implicit form of the circumference (R,cx,cy).
+% Author: Yasel Garces (88yasel@gmail.com).
 
-function v = fit_circunsference_LSFC(x,y)
+function v = fit_circumference_LSFC(x,y)
 
 % Traslation of the coordinate system
 u=x-mean(x);
