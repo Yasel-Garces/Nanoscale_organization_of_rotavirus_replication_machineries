@@ -1,0 +1,9 @@
+% It computes the standard deviation of the distance of a set of 
+% points  to a circumference
+% INPUT: 
+%      circ: circumference representation as [radius center_x center_y]
+%    points: 
+function [mean_circle,std_circle]=circle_std(circ,points)
+distance=abs(circ(1)^2 - (points(:,1)-circ(2)).^2-(points(:,2)-circ(3)).^2);
+mean_circle=mean(distance/100);
+std_circle=std(distance/100);
