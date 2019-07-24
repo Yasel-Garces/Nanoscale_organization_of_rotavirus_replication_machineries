@@ -16,7 +16,7 @@
 #' Column 1: Distance between the distribution of both proteins.
 #' Column 2: Radius of the circumference that adjust the central protein.
 #' Column 3: Radius of the circumference that adjust the other protein.
-#' @return 
+#' @return A set of graphics and statistics. See below for details.
 #' 
 #' @author Yasel Garces (88yasel@gmail.com)
 #===================================================================================
@@ -198,4 +198,3 @@ pdf(file = "HeatMapNSP2.pdf",width = 5,height = 5)
 heatmap.2(as.matrix(NewData),dendrogram="row",trace="none", margin=c(8,9), 
           hclust=hclustfunc, distfun=distfunc, RowSideColors=cols[groups],srtCol=45)
 dev.off()
-
