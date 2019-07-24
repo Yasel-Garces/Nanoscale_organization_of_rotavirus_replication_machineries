@@ -11,7 +11,8 @@
 %      central_protein: Is a vector of lenght = length(pathname). A 
 %                component is 1 if NSP2 is red and zero in other case.
 %      type: file type of the image
-% OUTPUT: The results will be saved in a Result.csv file with the structure:
+% OUTPUT: The results will be saved in a DistanceCenterProtein.csv file 
+%         with the structure:
 %   Column 1 (Combination): Name of the protein combined with NSP2
 %   Column 2 (Distance): Distance between the center of the adjusted 
 %                      circumferences to NSP2 and the accompanying protein.
@@ -80,3 +81,12 @@ end
 T=table(Combination,Distance);
 % Write and save data
 writetable(T,'DistanceCenterProtein.csv')
+
+%--------------------------------------------------------------------------
+% Nested functions
+function out=get_list_files(path,type)
+% Get all files
+list_dir=dir(fullfile(path,type));
+% Extract just the names of the files.
+out={list_dir.name};
+end
