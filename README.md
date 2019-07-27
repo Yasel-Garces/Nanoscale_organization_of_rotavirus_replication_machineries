@@ -16,7 +16,7 @@ This repository is organized in 5 directories, which contains the source codes t
 3. **Concentricity Hypothesis Validation**: The functions in this directory allow carry up to a study to validate the viral elements concentricity hypothesis based on the distance between the centers of the adjusted circumferences of both proteins. For more details see the README file into this directory.     
 4. **Automatic Image Processing**: This directory contains all the functions to run the unsupervised analysis of the images through the algorithm Vp-DLSFC (see the figure below which is also the [Figure 1 in the Appendix 1 of our article](https://elifesciences.org/articles/42906)). For more details about the functions included in this directory see the README file into it.    
 
-![](Scheme.png  "Scheme of the “Viroplasm Direct Least Square Fitting Circumference” algorithm")
+![](Scheme.png  "Scheme of the “Viroplasm Direct Least Square Fitting Circumference” algorithm")    
 **Figure**: *Scheme of the “Viroplasm Direct Least Square Fitting Circumference” algorithm (VPs-DLSFC). SRM) Complete SRM image; A) Manual pre-segmentation step, an expert selects and isolates each viroplasm as a single image; B) Fit a circumference to the reference protein through the algorithm DLSFC; C) The center of the reference protein is taken as the center of the accompanying protein, and then the radius of the adjust circumference for this second protein is computed.*      
 5. **R Codes**: It includes all the R source codes for the statistical analysis. For more details consult the README file into this directory.
 
