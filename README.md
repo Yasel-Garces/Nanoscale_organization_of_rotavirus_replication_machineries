@@ -15,7 +15,7 @@ This repository is organized in 5 directories, which contains the source codes t
 2. **Circumference Hypothesis Validation**: To proof the hypothesis that the viral elements of the VPs can be approximated through circumferences, we carried up a series of experiments based on the comparison between the circumference obtained by the algorithm DLSFC, and a least squared ellipse resulting of the "Direct Least Square Fitting Ellipse" (DLSFE) algorithm ([Fitzgibbon et al., 1999](https://ieeexplore.ieee.org/document/765658)). *For more details see the README file into this directory. *     
 3. **Concentricity Hypothesis Validation**: The functions in this directory allow carry up to a study to validate the viral elements concentricity hypothesis based on the distance between the centers of the adjusted circumferences of both proteins.  *For more details see the README file into this directory. *    
 4. **Automatic Image Processing** 
-![](/home/yasel/dibujo.png  "Scheme of the “Viroplasm Direct Least Square Fitting Circumference” algorithm")
+![](Scheme.png  "Scheme of the “Viroplasm Direct Least Square Fitting Circumference” algorithm")
 
 
 
