@@ -1,7 +1,9 @@
 #' This script analyses the distribution of the viral proteins into 
 #' the viroplasm taking NSP2 as the reference protein. For details about 
 #' the full research consult the paper
-#' "Nanoscale organization of rotavirus replication machineries", eLife.
+#' Garcés et al. Nanoscale organization of rotavirus replication machineries. 
+#' eLife 2019;8:e42906. https://elifesciences.org/articles/42906, 
+#' doi: 10.7554/eLife.42906.
 #' @param This script uses the data collected for each protein combination that
 #' are stored in the csv files:
 #' 1- NSP2rojo-VP4verde.csv
@@ -92,7 +94,7 @@ allProteins$Protein<-factor(allProteins$Protein,
                             levels = levels(allProteins$Protein)[c(2,1,3,4,6,5,7,8)])
 # Boxplot for the radius of the fitting circumferences. In each experimental condition 
 # we plot two boxes, the red box is for the radius of NSP2 (reference protein), and 
-# the blue box represents the radius of the accompanying VP components (names                                                                                                  in x-axis).
+# the blue box represents the radius of the accompanying VP components (names)                                                                                                  in x-axis).
 p<-ggplot(allProteins, aes(x = Protein, y = Value,fill=Comparison)) +
   geom_boxplot(notch=TRUE)+ylab(expression(
     paste("Circumference's Radius"," ", (paste(mu,m)))))+

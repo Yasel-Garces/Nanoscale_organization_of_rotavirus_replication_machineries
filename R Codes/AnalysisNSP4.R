@@ -1,8 +1,10 @@
 #' This script analyses the distribution of the viral proteins into 
-#' the viroplasm taking NSP2 as the reference protein. For details about 
+#' the viroplasm taking NSP4 as the reference protein. For details about 
 #' the full research consult the paper
-#' "Nanoscale organization of rotavirus replication machineries", eLife.
-#' @param This script uses the data collected for each protein combination that
+#''Garcés et al. Nanoscale organization of rotavirus replication machineries. 
+#'eLife 2019;8:e42906. https://elifesciences.org/articles/42906, doi: 10.7554/eLife.42906.
+#'
+#'  @param This script uses the data collected for each protein combination that
 #' are stored in the csv files:
 #' 1- NSP4vsVP6.csv
 #' This files have the following structure:
@@ -18,7 +20,7 @@
 ## FUNCTIONS 
 LMbyProtein <- function(data,Protein){
   # This function adjusts a least-square linear model to a set of points (data) and
-  # return a residual plot, a table with the coeficients of the lineal regression and 
+  # return a residual plot, a table with the coeficients of the linear regression and 
   # the residuals values.
   # INPUT: 
   #     data: data frame with columns (x,y).
@@ -30,7 +32,7 @@ LMbyProtein <- function(data,Protein){
   #     residual: residual valuess.
   # AUTHOR: Yasel Garces (88yasel@gmail.com)
   #-------------------------------------------------------------
-  # Adjust the lienar regression model to the data
+  # Adjust the linear regression model to the data
   fit<-lm(y ~ x - 1,data)
   # Summary the resut
   t<-summary(fit)
@@ -60,7 +62,7 @@ LMbyProtein <- function(data,Protein){
           axis.text.y =element_text(size=15),
           axis.text.x =element_text(size=15))
   
-  # Coefficients of the regression linear model
+  # Coefficients of the linear regression model
   coef<-t$coefficients
   # Residual values
   residual<-t$residuals
@@ -81,7 +83,8 @@ setwd('/home/yasel/TRABAJO/IBt/Viroplasms/GitHub Codes Paper  (No Mover)/Nanosca
 viroData<-read.csv('NSP4vsVP6.csv')
 
 ## Data manipulation
-# Convert the protein's name to a factor variable
+# Add a new variable with the name of the NSP4 accompanying protein
+# and convert to a factor variable
 viroData<-mutate(viroData, Protein='VP6')
 viroData$Protein<-as.factor(viroData$Protein)
 # Convert from pixels to microns (this is based on our experimetal design, for 
@@ -92,8 +95,8 @@ viroData$ratioOther=viroData$ratioOther/100
 #===================================================================================
 # Exploratory analysis of the results obtained by the algorithm VPs-DLSFC.
 # VP6 spatial distribution taking NSP4 as reference protein.
-# Create a convinient data frame that allow to boxplot the radii distribution of 
-# all the combinations off proteins.
+# Create a convinient data frame that allow to graphic with a boxplot 
+# the radii's distribution of all the combinations off proteins.
 allProteins<-mutate(viroData,Comparison="Other Protein")
 forNSP4<-select(allProteins,one_of(c("ratioNSP4","Protein")))
 forNSP4<-mutate(forNSP4,Comparison="NSP4")
@@ -101,7 +104,7 @@ allProteins<-data.frame(Comparison=c(forNSP4$Comparison,allProteins$Comparison),
                         Protein=c(as.character(forNSP4$Protein),as.character(allProteins$Protein)),
                         Value=c(forNSP4$ratioNSP4,allProteins$ratioOther))
 
-#Boxplot for the radii of the fitting circumference of NSP4 and VP6.
+# Boxplot for the radii of the fitting circumference of NSP4 and VP6.
 p<-ggplot(allProteins, aes(x = Protein, y = Value,fill=Comparison)) +
   geom_boxplot(notch=TRUE)+ylab(expression(
     paste("Radius of the adjusted circumference"," ", (paste(mu,m)))))+
@@ -110,9 +113,9 @@ p<-ggplot(allProteins, aes(x = Protein, y = Value,fill=Comparison)) +
 p
 # Two-sample Mann-Whitney hypothesis test, considering as variables the radii of
 # NSP4 in contrast with the radii of VP6.
-W_test<-wilcox.test(VP6$ratioOther/100,VP6$ratioNSP4/100,conf.int = TRUE)
+W_test<-wilcox.test(viroData$ratioOther,viroData$ratioNSP4,conf.int = TRUE)
 # Save the plot
-pdf(file = "/home/yasel/Dropbox/Paper Viroplasmas/Radius_With_NSP4.pdf",width = 6.8,
+pdf(file = "Radius_With_NSP4.pdf",width = 6.8,
     height = 5)
 p
 dev.off()
@@ -124,7 +127,7 @@ p<-ggplot(viroData, aes(x = Protein, y = Distance,fill=Protein)) +
   xlab("Protein")+scale_y_continuous(breaks = seq(from = 0, to = .3, by =0.05),limits = c(0,.3))
 p
 # Save figure
-pdf(file = "/home/yasel/Dropbox/Paper Viroplasmas/Distance_With_NSP4.pdf",width = 6.8,
+pdf(file = "Distance_With_NSP4.pdf",width = 6.8,
     height = 5)
 p
 dev.off()
@@ -143,7 +146,7 @@ p<-ggplot(viroData, aes(x = ratioNSP4, y = ratioOther,color=Protein)) + geom_poi
   theme(legend.position = "none",axis.text.x = element_text(vjust = 0.5))
 p
 # Save figure
-pdf(file = "/home/yasel/Dropbox/Paper Viroplasmas/LR_With_NSP4.pdf",width = 6.8,
+pdf(file = "LR_With_NSP4.pdf",width = 6.8,
     height = 5)
 p
 dev.off()
