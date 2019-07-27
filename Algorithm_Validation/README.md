@@ -1,28 +1,59 @@
+<style TYPE="text/css">
+code.has-jax {font: inherit; font-size: 100%; background: inherit; border: inherit;}
+</style>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [['$','$'], ['\\(','\\)']],
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre'] // removed 'code' entry
+    }
+});
+MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i = 0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+});
+</script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_HTML-full"></script>
+
 # Algorithm Validation
 *Author: Yasel Garces (88yasel@gmail.com)*
 ## Introduction
-Rotavirus genome replication and assembly take place in cytoplasmic electron dense inclusions termed viroplasms (VPs). Previous conventional optical microscopy studies observing the intracellular distribution of rotavirus proteins and their organization in VPs have lacked
-molecular-scale spatial resolution, due to inherent spatial resolution constraints. In our paper ''Nanoscale organization of rotavirus replication machineries'' [eLife, please include link] we employed super-resolution microscopy to reveal the nanometric-scale organization of VPs formed
-during rotavirus infection, and quantitatively describe the structural organization of seven viral proteins within and around the VPs. For this, we developed a segmentation algorithm based on a least squares approach, which we called ''Viroplasm Direct Least Squares Fitting Circumference'' (VP-DLSFC) (see ''Segmentation Algorithm'' in Appendix 1 in [INCLUDE LINK TO PAPER]), to measure the spatial distribution of the components within individual VPs by adjusting concentric circumferences. This method is automatic, deterministic, easy to implement, and has a linear computational complexity. 
+Rotavirus genome replication and assembly take place in cytoplasmic electron dense inclusions termed viroplasms (VPs). Previous conventional optical microscopy studies observing the intracellular distribution of rotavirus proteins and their organization in VPs have lacked molecular-scale spatial resolution, due to inherent spatial resolution constraints. In our paper 
 
-The performance of VP-DLSFC was tested on approximately 40,000 ''ground truth'' (GT) synthetic images, showing a high robustness to noise and partial occlusion scenarios. Additionally, we compared our method with two other alternative methods, ''Algebraic Least Square Fitting Circle'' (ALSFC) and Geometric Least Square Fitting Circle'' (GLSFC) ([Gander et al., 1994](https://link.springer.com/article/10.1007/BF01934268)), and our approach displayed an improved performance (see [LINK TO PAPER]).
+**Garcés et al. Nanoscale organization of rotavirus replication machineries. eLife 2019;8:e42906. https://elifesciences.org/articles/42906, doi: 10.7554/eLife.42906**
+
+we employed super-resolution microscopy to reveal the nanometric-scale organization of VPs formed during rotavirus infection, and quantitatively describe the structural organization of seven viral proteins within and around the VPs. For this, we developed a segmentation algorithm based on a least squares approach, which we called ''Viroplasm Direct Least Squares Fitting Circumference'' (VP-DLSFC) ([see ''Segmentation Algorithm'' in the Appendix 1 of the article](https://elifesciences.org/articles/42906)), to measure the spatial distribution of the components within individual VPs by adjusting concentric circumferences. This method is automatic, deterministic, easy to implement, and has a linear computational complexity. 
+
+The performance of VP-DLSFC was tested on approximately 40,000 ''ground truth'' (GT) synthetic images, showing a high robustness to noise and partial occlusion scenarios. Additionally, we compared our method with two other alternative methods, ''Algebraic Least Square Fitting Circle'' (ALSFC) and Geometric Least Square Fitting Circle'' (GLSFC) ([Gander et al., 1994](https://link.springer.com/article/10.1007/BF01934268)), and our approach displayed an improved performance (see [the article](https://elifesciences.org/articles/42906)).
 
 ## Validation Details
-For the validation, we simulated the spatial distribution of viral elements as circum-
-ferences, for which we know their parametric form (''ground truth'' dataset) (Appendix 1
-Figure 2A in [CITE PAPER HERE). The use of ''ground truth'' allows us to quantify the error in the adjustment of the algorithms DLSFC, ALSFC and GLSFC at different noise levels (Appendix 1 Figure 2B in [CITE PAPER HERE)) and partial occlusion conditions (Appendix 1 Figure 2C in [CITE PAPER HERE)). We generated over 40 000 images (size $512\times 512$ pixels) taking into account different levels of additive white Gaussian noise (AWGN) in order to consider auto-fluorescence and the error in the localization of the fluorophores by the algorithm 3B-ODE (see Appendix 1 Section 1), and partial occlusion angles. Several radii and position of the synthetic viroplasms were generated randomly through a uniform distribution function.
+For the validation, we simulated the spatial distribution of viral elements as circumferences, for which we know their parametric form (''ground truth'' dataset) ([Appendix 1 Figure 2A](https://elifesciences.org/articles/42906)). The use of ''ground truth'' allows us to quantify the error in the adjustment of the algorithms DLSFC, ALSFC and GLSFC at different noise levels ([Appendix 1 Figure 2B](https://elifesciences.org/articles/42906)) and partial occlusion conditions ([Appendix 1 Figure 2C](https://elifesciences.org/articles/42906)). We generated over 40 000 images (size $512\times 512$ pixels) taking into account different levels of additive white Gaussian noise (AWGN) in order to consider auto-fluorescence and the error in the localization of the fluorophores by the algorithm 3B-ODE ([see Appendix 1 Section 1](https://elifesciences.org/articles/42906)), and partial occlusion angles. Several radii and position of the synthetic viroplasms were generated randomly through a uniform distribution function.
 
-Interested in more details? Please see this paper here [LINK TO PAPER].
+Interested in more details? Please see the paper [here](https://elifesciences.org/articles/42906).
 
 ## Files in this Directory
 This directory is composed by 7 files, these are:
 
 1. **Run_Algorithm_Validation.m**: Matlab script. Allow the simulation of the images with different occlusion angles and noise levels and make the comparison between the VP-DLSFC, ALSFC and GLSFC algorithms.
-2. **draw ellipse.m**: Matlab script. This function generates the points of an ellipse using the parametric representation and polar coordinates system of this primitive (see [here](https://en.wikipedia.org/wiki/Ellipse#Polar_forms) for details).
+Example: ``Run_Algorithm_Validation()``
+2. **draw ellipse.m**: Matlab script. This function generates the points of an ellipse using the parametric representation and polar coordinates system of this primitive (see [here](https://en.wikipedia.org/wiki/Ellipse#Polar_forms) for details). 
+Example: ``draw_ellipse([57,57,286,314,0],[0,6.2832])``
 3. **fitcircle.m**: This is a third part function obtained from [File Exchange MathWorks](https://www.mathworks.com/matlabcentral/fileexchange/15060-fitcircle-m) that compute the algorithms ALSFC and GLSFC. ''This implementation copyright Richard Brown, 2007, but is freely available to copy, use, or modify as long as this line is maintained''. 
-4. **fit_circumference_LSFC.m**: Matlab script. This function adjusts a circumference to a set of points in R^2 through the algorithm VP-DLSFC (see [LINK TO PAPER] for details).
-5. **circle_std.m**: Matlab script. It computes the mean and the standard deviation of the distance of a set of points to a circumference.
+Example (ALSFC): ``fitcircle(Points, 'linear')``
+Example (GLSFC): ``fitcircle(Points)``
+ 
+4. **fit_circumference_LSFC.m**: Matlab script. This function adjusts a circumference to a set of points in $(X,Y)\in \mathbb{R}^2$ through the algorithm VP-DLSFC (see [the article](https://elifesciences.org/articles/42906) for details).
+Example: ``fit_circumference_LSFC(X,Y) ``
+
+5. **circle_std.m**: Matlab script. It computes the mean and the standard deviation of the distance of a set of points (Points=(X,Y)) to a circumference given by [R CX CY].
+Example: ``circle_std([57,286,314],Points)`` 
+
 6. **Statistical_Analysis.R**: R script. It performs the statistical analysis of the data generated by the simulation described above.
+Example: ``Ctrl+Enter`` to send an individual line of code from the editor to the console or to send a block of highlighted code to the console.
+``Ctrl+Shift+Enter`` to send the entire script to the console.
+
 7. **SimulationResult.csv**: This file contains all the results of the simulations.
 
 All the results obtained in this section are reproducible through these codes, and even when a new validation set of image is generated, you are going to obtain very similar results than those presented here (this is because the validation use a high number of images for the same experimental conditions, so we obtain a high convergence in the final results).
