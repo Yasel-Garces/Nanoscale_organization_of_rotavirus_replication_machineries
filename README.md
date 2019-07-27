@@ -7,3 +7,4 @@ Rotavirus genome replication and assembly take place in cytoplasmic electron den
 Super-resolution microscopy reveals, at nanometric-scale, the highly organized protein structure of viroplasms, the viral factories used by rotavirus to replicate its genome and assemble new viral particles .
 This repository collects all the source codes used to carry up this research. This research was published in eLife ([link to the article](https://elifesciences.org/articles/42906)) and can be cited as:
 ***Garcés et al. Nanoscale organization of rotavirus replication machineries. eLife 2019;8:e42906. https://elifesciences.org/articles/42906, doi: 10.7554/eLife.42906.***
+
