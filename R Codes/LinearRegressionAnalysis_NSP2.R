@@ -1,52 +1,5 @@
 #####################################################################
-## Function to do the linear regression analysis ##
-LMbyProtein<- function(data,Protein){
-  fit<-lm(y ~ x - 1,data)
-  t<-summary(fit)
-  
-  data$predicted <- predict(fit)   # Save the predicted values
-  data$residuals <- residuals(fit) # Save the residual values
-  
-  # Residuals graphic
-  # Use the residuals to make an aesthetic adjustment 
-  # (e.g. red colour when residual in very high) to highlight points 
-  # which are poorly predicted by the model.
-  Residuals<-abs(data$residuals)
-  res_plot<-ggplot(data, aes(x = x, y = y)) +
-    geom_smooth(method = "lm",formula = y~x-1, se = FALSE, color = "lightgrey") +
-    geom_segment(aes(xend = x, yend = predicted), alpha = .2) +
-    geom_point(aes(color = Residuals)) + # size also mapped
-    geom_point(aes(y = predicted),shape = 1)+
-    scale_color_continuous(low = "black", high = "red") +
-    guides(color = guide_colorbar())+
-    scale_x_continuous(breaks = seq(0,max(data$x)+0.1,by = 0.1))+
-    scale_y_continuous(breaks = seq(0,max(data$y)+0.1,by = 0.1))+
-    geom_label(x = min(data$x), hjust =0, y = max(data$y)-0.05,
-               label = paste("RSE=", abbreviate(as.character(t$sigma),5),"\n",
-                             "R-squared=", abbreviate(as.character(t$r.squared),5)))+
-    ylab(Protein)+xlab("NSP2")+scale_fill_continuous(guide = guide_legend()) +
-    theme(legend.key.width = unit(2.6, 'lines'), legend.position="bottom",
-          axis.text.y =element_text(size=15),
-          axis.text.x =element_text(size=15))
-  
-  # Coeff
-  coef<-t$coefficients
-  # Residuals
-  residual<-t$residuals
-  
-  list(Res_plot=res_plot,coef=coef,res=residual)
-}
-# Remove outliers in data frame
-remove_outliers <- function(data, na.rm = TRUE, ...) {
-  x<-data$ratioOther
-  qnt <- quantile(x, probs=c(.25, .75), na.rm = TRUE)
-  H <- 1.5 * IQR(x, na.rm = na.rm)
-  y <- x
-  y[x < (qnt[1] - H)] <- NA
-  y[x > (qnt[2] + H)] <- NA
-  data$ratioOther<-y
-  na.omit(data,cols="ratioOther")
-}
+
 #####################################################################
 # Load Libraries
 library(dplyr)
@@ -57,10 +10,10 @@ library(ggsignif)
 # --------------
 
 # Change work directory and Load data
-setwd('/home/yasel/Dropbox/Paper Viroplasmas/Programs/R/ResultsCSV/NSP2/')
+setwd('/home/yasel/TRABAJO/IBt/Viroplasms/GitHub Codes Paper  (No Mover)/Nanoscale_organization_of_rotavirus_replication_machineries/R Codes/ResultsCSV/NSP2')
+# Load the functions saved in Functions.R
+source('/home/yasel/TRABAJO/IBt/Viroplasms/GitHub Codes Paper  (No Mover)/Nanoscale_organization_of_rotavirus_replication_machineries/R Codes/Functions.R')
 
-#dsRNA<-read.csv('NSP2rojo-dsRNAverde.csv')
-#PDI<-read.csv('NSP2rojo-PDIverde.csv')
 VP4<-read.csv('NSP2rojo-VP4verde.csv')
 VP6<-read.csv('NSP2rojo-VP6verde.csv')
 VP760<-read.csv('NSP2rojo-VP760verde.csv')
@@ -72,8 +25,6 @@ VP2<-read.csv('NSP2rojo-VP2verde.csv')
 ##-----------------------------------------------
 ## Data manipulation
 # Create a factor variable with the protein name
-#dsRNA<-mutate(dsRNA, Protein='dsRNA')
-#PDI<-mutate(PDI, Protein='PDI')
 VP4<-mutate(VP4, Protein='VP4')
 VP6<-mutate(VP6, Protein='VP6')
 VP760<-mutate(VP760, Protein='VP760')
@@ -178,42 +129,34 @@ dev.off()
 # Study of the linear regression.
 # NSP2 vs NSP5
 data<-data.frame(x=NSP5$ratioNSP2/100,y=NSP5$ratioOther/100)
-LM_NSP5<-LMbyProtein(data,"NSP5")
+LM_NSP5<-LMbyProtein(data,"NSP5","NSP2")
 
 # NSP2 vs NSP4
 data<-data.frame(x=NSP4$ratioNSP2/100,y=NSP4$ratioOther/100)
-LM_NSP4<-LMbyProtein(data,"NSP4")
-
-# NSP2 vs PDI
-#data<-data.frame(x=PDI$ratioNSP2/100,y=PDI$ratioOther/100)
-#LM_PDI<-LMbyProtein(data,"PDI")
-
-# NSP2 vs dsRNA
-data<-data.frame(x=dsRNA$ratioNSP2/100,y=dsRNA$ratioOther/100)
-LM_dsRNA<-LMbyProtein(data,"dsRNA")
+LM_NSP4<-LMbyProtein(data,"NSP4","NSP2")
 
 # NSP2 vs VP6
 data<-data.frame(x=VP6$ratioNSP2/100,y=VP6$ratioOther/100)
-LM_VP6<-LMbyProtein(data,"VP6")
+LM_VP6<-LMbyProtein(data,"VP6","NSP2")
 
 # NSP2 vs VP4
 data<-data.frame(x=VP4$ratioNSP2/100,y=VP4$ratioOther/100)
-LM_VP4<-LMbyProtein(data,"VP4")
+LM_VP4<-LMbyProtein(data,"VP4","NSP2")
 
 # NSP2 vs VP760
 data<-data.frame(x=VP760$ratioNSP2/100,y=VP760$ratioOther/100)
-LM_VP760<-LMbyProtein(data,"VP760")
+LM_VP760<-LMbyProtein(data,"VP760","NSP2")
 
 # NSP2 vs VP7159
 data<-data.frame(x=VP7159$ratioNSP2/100,y=VP7159$ratioOther/100)
-LM_VP7159<-LMbyProtein(data,"VP7159")
+LM_VP7159<-LMbyProtein(data,"VP7159","NSP2")
 
 # NSP2 vs VP1
 data<-data.frame(x=VP1$ratioNSP2/100,y=VP1$ratioOther/100)
 LM_VP1<-LMbyProtein(data,"VP1")
 # NSP2 vs VP2
 data<-data.frame(x=VP2$ratioNSP2/100,y=VP2$ratioOther/100)
-LM_VP2<-LMbyProtein(data,"VP2")
+LM_VP2<-LMbyProtein(data,"VP2","NSP2")
 ##-----------------------------------------------------##
 ## Coefficients of the linear regression
 coefficients<-rbind(LM_NSP5$coef,LM_NSP4$coef, LM_VP1$coef,LM_VP2$coef,
@@ -225,7 +168,7 @@ coefficients<-data.frame(Protein=c("NSP5","NSP4","VP1","VP2",
                                       "VP6","VP4","VP760","VP7159"))
 # Plot the slope of the regression model for each protein.
 coefficients$Protein<-factor(coefficients$Protein,levels = levels(coefficients$Protein)[c(2,1,3,4,6,5,8,7)])
-pdf(file = "/home/yasel/Dropbox/Paper Viroplasmas/SlopeEstimationCI.pdf",width = 4.5,height = 5)
+pdf(file = "SlopeEstimationCI.pdf",width = 4.5,height = 5)
 ggplot(coefficients,aes(x = Protein,y = Estimate,color=Protein))+
   geom_errorbar(ymin = coefficients$Estimate - coefficients$Std.Error, 
                 ymax = coefficients$Estimate + coefficients$Std.Error,
@@ -236,7 +179,7 @@ ggplot(coefficients,aes(x = Protein,y = Estimate,color=Protein))+
                                             label = format(Estimate, scientific = FALSE)),angle=90)
 dev.off()
 # Plot the p.value of the regression model for each protein.
-pdf(file = "/home/yasel/Dropbox/Paper Viroplasmas/PValueRM.pdf",width = 4,height = 4)
+pdf(file = "PValueRM.pdf",width = 4,height = 4)
 ggplot(coefficients, aes(y=Protein,x=p.value, label=round(p.value,4),color=Protein)) +
   geom_point(stat='identity', size=8)+
   geom_text(color="white", size=2)+theme(panel.grid.major.y =
@@ -250,43 +193,35 @@ dev.off()
 # --------------------------------------------
 # Save the plots
 ## LM_NSP5
-pdf(file = "/home/yasel/Dropbox/Paper Viroplasmas/LM_NSP5.pdf",width = 4.5,height = 4)
+pdf(file = "LM_NSP5.pdf",width = 4.5,height = 4)
 LM_NSP5$Res_plot
 dev.off()
 ## LM_NSP4
-pdf(file = "/home/yasel/Dropbox/Paper Viroplasmas/LM_NSP4.pdf",width = 4.5,height = 4)
+pdf(file = "LM_NSP4.pdf",width = 4.5,height = 4)
 LM_NSP4$Res_plot
 dev.off()
-## LM_PDI
-#pdf(file = "/home/yasel/Dropbox/Paper Viroplasmas/LM_PDI.pdf",width = 4.5,height = 4)
-#LM_PDI$Res_plot
-#dev.off()
-## LM_dsRNA
-# pdf(file = "/home/yasel/Dropbox/Paper Viroplasmas/LM_dsRNA.pdf",width = 4.5,height = 4)
-# LM_dsRNA$Res_plot
-# dev.off()
 ## LM_VP6
-pdf(file = "/home/yasel/Dropbox/Paper Viroplasmas/LM_VP6.pdf",width = 4.5,height = 4)
+pdf(file = "LM_VP6.pdf",width = 4.5,height = 4)
 LM_VP6$Res_plot
 dev.off()
 ## LM_VP4
-pdf(file = "/home/yasel/Dropbox/Paper Viroplasmas/LM_VP4.pdf",width = 4.5,height = 4)
+pdf(file = "LM_VP4.pdf",width = 4.5,height = 4)
 LM_VP4$Res_plot
 dev.off()
 ## LM_VP760
-pdf(file = "/home/yasel/Dropbox/Paper Viroplasmas/LM_VP760.pdf",width = 4.5,height = 4)
+pdf(file = "LM_VP760.pdf",width = 4.5,height = 4)
 LM_VP760$Res_plot
 dev.off()
 ## LM_VP7159
-pdf(file = "/home/yasel/Dropbox/Paper Viroplasmas/LM_VP7159.pdf",width = 4.5,height = 4)
+pdf(file = "LM_VP7159.pdf",width = 4.5,height = 4)
 LM_VP7159$Res_plot
 dev.off()
 ## LM_VP1
-pdf(file = "/home/yasel/Dropbox/Paper Viroplasmas/LM_VP1.pdf",width = 4.5,height = 4)
+pdf(file = "LM_VP1.pdf",width = 4.5,height = 4)
 LM_VP1$Res_plot
 dev.off()
 ## LM_VP2
-pdf(file = "/home/yasel/Dropbox/Paper Viroplasmas/LM_VP2.pdf",width = 4.5,height = 4)
+pdf(file = "LM_VP2.pdf",width = 4.5,height = 4)
 LM_VP2$Res_plot
 dev.off()
 ######################################################################
@@ -320,6 +255,6 @@ p<-ggplot()+geom_point()+
                                      label=Protein), size=4)+
   scale_x_discrete()+scale_y_discrete()+ylab("")+xlab("")
 # Save the plot
-pdf(file = "/home/yasel/Dropbox/Paper Viroplasmas/Scheme.pdf",width = 6,height = 5)
+pdf(file = "Scheme.pdf",width = 6,height = 5)
 p
 dev.off()
