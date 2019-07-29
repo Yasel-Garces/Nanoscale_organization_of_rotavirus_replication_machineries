@@ -2,9 +2,25 @@
 #=========================================================================
 ## Function to do the linear regression analysis ##
 LMbyProtein<- function(data,dependent, independent){
+  # This function adjusts a least-square linear model to a set of points (data) and
+  # return a residual plot, a table with the coeficients of the linear regression and 
+  # the residuals values.
+  # INPUT: 
+  #     data: data frame with columns (x,y).
+  #     dependent: Name of the viral protein that is going to be adjusted as dependet 
+  #              variable
+  #     independent: Name of the independent viral protein.
+  # OUTPUT: A list with the next elements:
+  #     res_plot: Residual of the linear regression model.
+  #     coef: Coefficients of the linear regression model.
+  #     residual: residual valuess.
+  # AUTHOR: Yasel Garces (88yasel@gmail.com)
+  #-------------------------------------------------------------
+  # Adjust the linear regression model to the data
   fit<-lm(y ~ x - 1,data)
+  # Summary the resut
   t<-summary(fit)
-  
+  # Extract the predicted and residuals values
   data$predicted <- predict(fit)   # Save the predicted values
   data$residuals <- residuals(fit) # Save the residual values
   
@@ -34,7 +50,7 @@ LMbyProtein<- function(data,dependent, independent){
   coef<-t$coefficients
   # Residuals
   residual<-t$residuals
-  
+  # Return the graphic, the coefficients of the linear regression and the residuals
   list(Res_plot=res_plot,coef=coef,res=residual)
 }
 #=========================================================================

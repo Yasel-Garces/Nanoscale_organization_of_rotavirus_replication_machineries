@@ -1,19 +1,43 @@
-#####################################################################
-
-#####################################################################
+#' This script analyses the distribution of the viral proteins into 
+#' the viroplasm taking NSP2 as the reference protein. For details about 
+#' the full research consult the below article:
+#' Garcés et al. Nanoscale organization of rotavirus replication machineries. 
+#' eLife 2019;8:e42906. https://elifesciences.org/articles/42906, 
+#' doi: 10.7554/eLife.42906.
+#' 
+#' @param This script uses the data collected for each protein combination that
+#' are stored in the csv files:
+#' 1- NSP2rojo-VP4verde.csv
+#' 2- NSP2rojo-VP6verde.csv
+#' 3- NSP2rojo-VP760verde.csv
+#' 4- NSP2rojo-VP7159verde.csv
+#' 5- NSP2rojo-VP1verde.csv
+#' 6- NSP2rojo-VP2verde.csv
+#' 7- NSP4rojo-NSP2verde.csv
+#' 8- NSP5rojo-NSP2verde.csv
+#' All these files have the following structure:
+#' Column 1: Distance between the distribution of both proteins.
+#' Column 2: Radius of the circumference that adjust the central protein.
+#' Column 3: Radius of the circumference that adjust the other protein.
+#' @return A set of graphics and statistics. See below for details.
+#' @author Yasel Garces (88yasel@gmail.com)
+#===================================================================================
+#===================================================================================
+## FUNCTIONS 
+# Load the functions saved in Functions.R
+source('/home/yasel/TRABAJO/IBt/Viroplasms/GitHub Codes Paper  (No Mover)/Nanoscale_organization_of_rotavirus_replication_machineries/R Codes/Functions.R')
+#===================================================================================
 # Load Libraries
 library(dplyr)
 library(ggplot2)
 library(cowplot)
 library(plotly)
 library(ggsignif)
-# --------------
+theme_set(theme_cowplot()) # Change theme
 
-# Change work directory and Load data
+# Set work directory
 setwd('/home/yasel/TRABAJO/IBt/Viroplasms/GitHub Codes Paper  (No Mover)/Nanoscale_organization_of_rotavirus_replication_machineries/R Codes/ResultsCSV/NSP2')
-# Load the functions saved in Functions.R
-source('/home/yasel/TRABAJO/IBt/Viroplasms/GitHub Codes Paper  (No Mover)/Nanoscale_organization_of_rotavirus_replication_machineries/R Codes/Functions.R')
-
+# Load data
 VP4<-read.csv('NSP2rojo-VP4verde.csv')
 VP6<-read.csv('NSP2rojo-VP6verde.csv')
 VP760<-read.csv('NSP2rojo-VP760verde.csv')
@@ -22,9 +46,9 @@ NSP4<-read.csv('NSP4rojo-NSP2verde.csv')
 NSP5<-read.csv('NSP5rojo-NSP2verde.csv')
 VP1<-read.csv('NSP2rojo-VP1verde.csv')
 VP2<-read.csv('NSP2rojo-VP2verde.csv')
-##-----------------------------------------------
+#===================================================================================
 ## Data manipulation
-# Create a factor variable with the protein name
+# Add a new variable with the name of the NSP2 accompanying protein
 VP4<-mutate(VP4, Protein='VP4')
 VP6<-mutate(VP6, Protein='VP6')
 VP760<-mutate(VP760, Protein='VP760')
@@ -34,7 +58,7 @@ NSP5<-mutate(NSP5, Protein='NSP5')
 VP1<-mutate(VP1, Protein='VP1')
 VP2<-mutate(VP2, Protein='VP2')
 
-# Remove outliers
+# Remove the outliers with the objective to obtain a more accurate model.
 VP4<-remove_outliers(VP4)
 VP6<-remove_outliers(VP6)
 VP760<-remove_outliers(VP760)
@@ -44,25 +68,28 @@ NSP5<-remove_outliers(NSP5)
 VP1<-remove_outliers(VP1)
 VP2<-remove_outliers(VP2)
 
-# Merge the data in a same data frame
+# Merge the data and convert the "Protein" column to a factor variable
 viroData<-rbind(VP6,NSP4,NSP5,VP4,VP7159,VP760,VP1,VP2)
 viroData$Protein<-as.factor(viroData$Protein)
+# Convert from pixels to microns (this is based on our experimetal design, for 
+# other experiments you need to take care about how to do this conversion).
 viroData$Distance=viroData$Distance/100
 viroData$ratioNSP2=viroData$ratioNSP2/100
 viroData$ratioOther=viroData$ratioOther/100
 
-# Change order factor variable
+# Orders the factor levels
 viroData$Protein<-factor(viroData$Protein,levels = levels(viroData$Protein)[c(2,1,3,4,6,5,8,7)])
 
-# Histogram with the frequency
-pdf(file = "/home/yasel/Dropbox/Paper Viroplasmas/Histogram.pdf",width = 6,height = 6)
+# Plot a histogram with the number of samples per condition.
+pdf(file = "Histogram.pdf",width = 6,height = 6)
 ggplot(viroData,aes(Protein,fill=Protein))+geom_histogram(stat = "count")+
   theme(legend.position = "none",axis.text.x = element_text(angle = 45, vjust = 0.5))+
   geom_text(stat = "count", aes(label = ..count.., y = ..count..+2))
 dev.off()
-## END DATA PREPARATION ##
-#----------------------
-# Lineal dependence between NSP2 and the others proteins. That is for the ratio of the circle
+#===================================================================================
+# Linear regression fitting taking the radius of NSP2 as independent variable
+# and the radius of all the other proteins as dependent variable. The gray shadow represents the 
+# confidence interval at a level of 95%.
 p<-ggplot(viroData, aes(x = ratioNSP2, y = ratioOther,color=Protein)) + geom_point(show.legend=FALSE) + 
   facet_grid(~ Protein)+ xlab("Ratio NSP2")+
   geom_smooth(method='lm',formula=y~x-1,show.legend=FALSE)+
@@ -73,21 +100,16 @@ p<-ggplot(viroData, aes(x = ratioNSP2, y = ratioOther,color=Protein)) + geom_poi
                                            (paste(mu,m)))))+
   theme(legend.position = "none",axis.text.x = element_text(angle = 90, vjust = 0.5))
 p
-# Save the graphics ----------------------
-## PDF
+# Save the graphic 
 pdf(file = "/home/yasel/Dropbox/Paper Viroplasmas/LinearRegre_Ratio.pdf",width = 7.5,height = 5.5)
 p
 dev.off()
-# --------------------------------------------
-
-#################################################################
-# Inferential analysis (test between the radius of the proteins.)
-# Resume the data
-# Test
+#===================================================================================
+# Hypothesis test (Test of Equal or Given Proportions)
+# The ‘Mann-Whitney’ test was carry out to evaluate the differences between
+# the radii of the dependent and independent variables.
 KW_NSP5<-wilcox.test(NSP5$ratioOther/100,NSP5$ratioNSP2/100,conf.int = TRUE)
-#KW_PDI<-wilcox.test(PDI$ratioOther/100,PDI$ratioNSP2/100,conf.int = TRUE)
 KW_NSP4<-wilcox.test(NSP4$ratioOther/100,NSP4$ratioNSP2/100,conf.int = TRUE)
-#KW_dsRNA<-wilcox.test(dsRNA$ratioOther/100,dsRNA$ratioNSP2/100,conf.int = TRUE)
 KW_VP6<-wilcox.test(VP6$ratioOther/100,VP6$ratioNSP2/100,conf.int = TRUE)
 KW_VP4<-wilcox.test(VP4$ratioOther/100,VP4$ratioNSP2/100,conf.int = TRUE)
 KW_VP760<-wilcox.test(VP760$ratioOther/100,VP760$ratioNSP2/100,conf.int = TRUE)
@@ -95,10 +117,10 @@ KW_VP7159<-wilcox.test(VP7159$ratioOther/100,VP7159$ratioNSP2/100,conf.int = TRU
 KW_VP1<-wilcox.test(VP1$ratioOther/100,VP1$ratioNSP2/100,conf.int = TRUE)
 KW_VP2<-wilcox.test(VP2$ratioOther/100,VP2$ratioNSP2/100,conf.int = TRUE)
 
-# p-value
+# p-value of the Mann-Whitney test
 p_value<-c(KW_NSP5$p.value, KW_NSP4$p.value, KW_VP1$p.value,KW_VP2$p.value, 
            KW_VP6$p.value, KW_VP4$p.value, KW_VP760$p.value, KW_VP7159$p.value)
-# W
+# W (the value of the test statistic) 
 W<-c(KW_NSP5$statistic, KW_NSP4$statistic, KW_VP1$statistic,KW_VP2$statistic,
      KW_VP6$statistic, KW_VP4$statistic, KW_VP760$statistic, KW_VP7159$statistic)
 # Confidence interval
@@ -106,16 +128,16 @@ lessCoef<-c(KW_NSP5$conf.int[1], KW_NSP4$conf.int[1], KW_VP1$conf.int[1],KW_VP2$
             KW_VP6$conf.int[1], KW_VP4$conf.int[1], KW_VP760$conf.int[1], KW_VP7159$conf.int[1])
 greatCoef<-c(KW_NSP5$conf.int[2], KW_NSP4$conf.int[2], KW_VP1$conf.int[2],KW_VP2$conf.int[2],
              KW_VP6$conf.int[2], KW_VP4$conf.int[2], KW_VP760$conf.int[2], KW_VP7159$conf.int[2])
-  # difference in location
+# difference in location
 Diff_Location<-c(KW_NSP5$estimate, KW_NSP4$estimate, KW_VP1$estimate,KW_VP2$estimate,
                 KW_VP6$estimate, KW_VP4$estimate, KW_VP760$estimate, KW_VP7159$estimate)
-# Create data frame
+# Create a data frame with all the previous information
 wilcoxTest<-data.frame(Protein = c("NSP5","NSP4","VP1","VP2","VP6","VP4","VP760",
                                    "VP7159"),W,Diff_Location,lessCoef,greatCoef,p_value)
 wilcoxTest$Protein<-factor(wilcoxTest$Protein,levels = levels(wilcoxTest$Protein)[c(2,1,3,4,6,5,8,7)])
 
-# Plot the results of Wilcox test.
-pdf(file = "/home/yasel/Dropbox/Paper Viroplasmas/DifferenceLocation.pdf",width = 4.5,height = 5)
+# Plot the results of the Mann-Whitney test.
+pdf(file = "DifferenceLocation.pdf",width = 4.5,height = 5)
 ggplot(wilcoxTest,aes(x = Protein,y = Diff_Location,color=Protein))+
   geom_errorbar(ymin = lessCoef, ymax = greatCoef,width = 0.3 , size=1)+
   geom_point(size=3)+  
@@ -124,41 +146,34 @@ ggplot(wilcoxTest,aes(x = Protein,y = Diff_Location,color=Protein))+
   ylab("Difference Location")+geom_text(aes(y = greatCoef+0.12,
                                             label = format(p_value, scientific = TRUE)),angle=90)
 dev.off()
-
-#################################################################
-# Study of the linear regression.
+#===================================================================================
+# Linear regression analysis for all the protein combinations.
 # NSP2 vs NSP5
 data<-data.frame(x=NSP5$ratioNSP2/100,y=NSP5$ratioOther/100)
 LM_NSP5<-LMbyProtein(data,"NSP5","NSP2")
-
 # NSP2 vs NSP4
 data<-data.frame(x=NSP4$ratioNSP2/100,y=NSP4$ratioOther/100)
 LM_NSP4<-LMbyProtein(data,"NSP4","NSP2")
-
 # NSP2 vs VP6
 data<-data.frame(x=VP6$ratioNSP2/100,y=VP6$ratioOther/100)
 LM_VP6<-LMbyProtein(data,"VP6","NSP2")
-
 # NSP2 vs VP4
 data<-data.frame(x=VP4$ratioNSP2/100,y=VP4$ratioOther/100)
 LM_VP4<-LMbyProtein(data,"VP4","NSP2")
-
 # NSP2 vs VP760
 data<-data.frame(x=VP760$ratioNSP2/100,y=VP760$ratioOther/100)
 LM_VP760<-LMbyProtein(data,"VP760","NSP2")
-
 # NSP2 vs VP7159
 data<-data.frame(x=VP7159$ratioNSP2/100,y=VP7159$ratioOther/100)
 LM_VP7159<-LMbyProtein(data,"VP7159","NSP2")
-
 # NSP2 vs VP1
 data<-data.frame(x=VP1$ratioNSP2/100,y=VP1$ratioOther/100)
 LM_VP1<-LMbyProtein(data,"VP1")
 # NSP2 vs VP2
 data<-data.frame(x=VP2$ratioNSP2/100,y=VP2$ratioOther/100)
 LM_VP2<-LMbyProtein(data,"VP2","NSP2")
-##-----------------------------------------------------##
-## Coefficients of the linear regression
+#===================================================================================
+## Coefficients of the linear regressions
 coefficients<-rbind(LM_NSP5$coef,LM_NSP4$coef, LM_VP1$coef,LM_VP2$coef,
                     LM_VP6$coef,LM_VP4$coef,LM_VP760$coef,LM_VP7159$coef)
 colnames(coefficients)<-c("Estimate","Std.Error","t.value","p.value")
@@ -168,6 +183,7 @@ coefficients<-data.frame(Protein=c("NSP5","NSP4","VP1","VP2",
                                       "VP6","VP4","VP760","VP7159"))
 # Plot the slope of the regression model for each protein.
 coefficients$Protein<-factor(coefficients$Protein,levels = levels(coefficients$Protein)[c(2,1,3,4,6,5,8,7)])
+# Plot the coefficients of the linear regresions
 pdf(file = "SlopeEstimationCI.pdf",width = 4.5,height = 5)
 ggplot(coefficients,aes(x = Protein,y = Estimate,color=Protein))+
   geom_errorbar(ymin = coefficients$Estimate - coefficients$Std.Error, 
@@ -178,7 +194,7 @@ ggplot(coefficients,aes(x = Protein,y = Estimate,color=Protein))+
   ylab("Slope Estimation & CI")+geom_text(aes(y = Estimate - coefficients$Std.Error- 0.25,
                                             label = format(Estimate, scientific = FALSE)),angle=90)
 dev.off()
-# Plot the p.value of the regression model for each protein.
+# Plot the p.value of the regression models for each protein.
 pdf(file = "PValueRM.pdf",width = 4,height = 4)
 ggplot(coefficients, aes(y=Protein,x=p.value, label=round(p.value,4),color=Protein)) +
   geom_point(stat='identity', size=8)+
@@ -190,7 +206,7 @@ ggplot(coefficients, aes(y=Protein,x=p.value, label=round(p.value,4),color=Prote
   )+theme(legend.position = "none")+
   xlab("P-Value")+ylab("Proteins")
 dev.off()
-# --------------------------------------------
+#===================================================================================
 # Save the plots
 ## LM_NSP5
 pdf(file = "LM_NSP5.pdf",width = 4.5,height = 4)
@@ -227,9 +243,9 @@ dev.off()
 ######################################################################
 # Model Representation
 ######################################################################
-library("geomnet")
+library(geomnet)
 library(ggforce)
-
+# Data frame with all the proteins and the coefficient of the linear regressions.
 mydata<-data.frame(
   Protein = c("NSP5","NSP2","NSP4","VP2","VP1","VP6","VP4","VP760","VP7159"),
   Radius = c(0.6,
