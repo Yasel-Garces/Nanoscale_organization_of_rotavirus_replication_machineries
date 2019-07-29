@@ -1,5 +1,4 @@
-% Principal scrip to read and process all images in one specific hour
-% post infection
+% Main script to read and process all the images for all the hours post-infection
 % INPUT: 
 %      pathname: Cell array that contain the path to read the images for 
 %                experimental condition.
@@ -64,14 +63,14 @@ for j=1:length(pathname)
             CentralP=fit_circumference_LSFC(y_red,x_red);
             % Fit the other protein
             centerCentralP=[CentralP(3)-mean(y_red) CentralP(2)-mean(x_red)];
-            R_other=closeNSP2(centerCentralP,x_green,y_green);
+            R_other=radius_accompanying_protein(centerCentralP,x_green,y_green);
         else
             % If the reference protein is labeled in green:
             % Circumference adjustment
             CentralP=fit_circunsference_LSFC(y_green,x_green);
             % Fit the other protein
             centerCentralP=[CentralP(2)-mean(y_green) CentralP(3)-mean(x_green)];
-            R_other=closeNSP2(centerCentralP,x_red,y_red);
+            R_other=radius_accompanying_protein(centerCentralP,x_red,y_red);
         end
         
         % Distance between the circumferences
@@ -87,7 +86,7 @@ for j=1:length(pathname)
     NameFile=char(NameFile(end-1));
     
     % Write results
-    pathname='/home/yasel/Dropbox/Paper Viroplasmas/Programs/R/ResultsCSV/NSP2/';
+    pathname='/R/ResultsCSV/NSP2/';
     csvwriteh(strcat(pathname,strcat(NameFile,'.csv')),...
         Data,  {'Distance',strcat('ratio',nameCentralProtein),'ratioOther'})
 end

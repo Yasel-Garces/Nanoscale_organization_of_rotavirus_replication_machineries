@@ -1,6 +1,8 @@
 % Adjust a circumference to a set of points in R^2. The algorithm is based in a least square 
 % approach. Details about this algorithm is available in this paper:
-% "Nanoscale organization of rotavirus replication machineries", eLife
+% Garcés et al. Nanoscale organization of rotavirus replication machineries. 
+% eLife 2019;8:e42906. https://elifesciences.org/articles/42906, 
+% doi: 10.7554/eLife.42906.
 % INPUT:
 %     x,y: data points
 % OUTPUT:
