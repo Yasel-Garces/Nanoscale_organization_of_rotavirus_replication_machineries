@@ -1,9 +1,10 @@
 % Program to validate the hypothesis that the central and the accompainy 
 % protein are concentric.
-% In each experiment we have a couple of proteins (normally NSP2 as
-% a central protein). For each combination (for example NSP-NSP4 
-% and NSP2-VP6) we adjust the least square circle (algorithm DLSFC) 
-% to each protein independently.
+% In each experiment, we have a couple of proteins (normally NSP2 as a 
+% central protein). For each combination (for example NSP2-NSP4 and 
+% NSP2-VP6) we adjust the least square circumference through the 
+% algorithm DLSFC to each protein independently and compute the 
+% distance between their centers.
 % INPUT: 
 %      pathname: Cell array that contain the path to read the images for 
 %                the validation.
