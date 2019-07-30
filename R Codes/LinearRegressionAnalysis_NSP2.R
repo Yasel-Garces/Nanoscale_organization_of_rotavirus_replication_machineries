@@ -1,6 +1,5 @@
-#' This script analyses the distribution of the viral proteins into 
-#' the viroplasm taking NSP2 as the reference protein. For details about 
-#' the full research consult the below article:
+#' This script contains the linear regression analysis considering the radius 
+#' of NSP2 as the independent variable.
 #' Garcés et al. Nanoscale organization of rotavirus replication machineries. 
 #' eLife 2019;8:e42906. https://elifesciences.org/articles/42906, 
 #' doi: 10.7554/eLife.42906.
