@@ -6,8 +6,10 @@
 % (Fitzgibbon A, Pilu M, Fisher B. Direct Least Squares Fitting of 
 %  Ellipses. IEEE Transactions on Pattern Analysis and Machine 
 %  Intelligence. 1999; 21(5). doi: 10.1109/ICPR.1996.546029.).
-% See the article "Nanoscale organization of rotavirus replication 
-%                  machineries", eLife for details.
+% See the article 
+% Garcés et al. Nanoscale organization of rotavirus replication machineries. 
+% eLife 2019;8:e42906. https://elifesciences.org/articles/42906, 
+% doi: 10.7554/eLife.42906.
 % INPUT: 
 %      pathname: Cell array that contain the path to read the images for 
 %                the validation.
